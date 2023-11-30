@@ -37,14 +37,12 @@ async function uploadFile(
 }
 
 export default function Home() {
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   // State to store the response from the upload
-  const [uploadResponse, setUploadResponse] = useState(
-    {} as {
-      sourceId: string;
-    }
-  );
-  const [messages, setMessages] = useState<IMessage[]>();
+  const [uploadResponse, setUploadResponse] = useState<{ sourceId: string }>({
+    sourceId: "",
+  });
+  const [messages, setMessages] = useState<IMessage[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [newQuestionAdded, setNewQuestionAdded] = useState<boolean>(false);
 
@@ -115,8 +113,10 @@ export default function Home() {
               id="file"
               className="hidden"
               onChange={(e) => {
-                const file = e.target.files[0];
-                uploadFile(file, setUploadResponse);
+                const file = e.target.files?.[0];
+                if (file) {
+                  uploadFile(file, setUploadResponse);
+                }
               }}
             />
           </div>
@@ -124,7 +124,7 @@ export default function Home() {
         {uploadResponse.sourceId && (
           <div className="w-full space-y-2">
             <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
-              {messages.map((message, key) => {
+              {messages?.map((message, key) => {
                 return message.role === "user" ? (
                   <div className="flex justify-end my-2" key={key}>
                     <div className="bg-blue-600 text-white py-2 px-4 rounded-2xl max-w-xl">
