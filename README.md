@@ -1,4 +1,15 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Simple Chat PDF
+
+[ChatPDF-Multifverse](https://pdf-chat-test-xqbd.vercel.app/)
+
+## Description
+
+API used: Chat PDF
+
+Resources: PDF containing information of the website
+Result/Implementation Detail: React Chatbot application that utilizes the ChatPDF API that can recieve questions and answer anything about the website, and output it inside within the chatbot UI.
+
+Result/Implementation Detail: Within the response that ChatPDF makes, the references of the pages are converted into its respective web page links rather than the page numbers
 
 ## Getting Started
 
@@ -22,15 +33,7 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+To learn more about ChatPDF, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Chat PDF API Documentation](https://www.chatpdf.com/docs/api/backend) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
