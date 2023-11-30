@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState, useRef } from "react";
 
 const apiKey = "sec_jPCBzEye7iQA38mza2upVdBGnz2xOBVH";
 
@@ -32,22 +32,17 @@ async function uploadFile(
 }
 
 export default function Home() {
+  const messagesEndRef = useRef(null);
   // State to store the response from the upload
   const [uploadResponse, setUploadResponse] = useState(
     {} as {
       sourceId: string;
     }
   );
-
-  const [messages, setMessages] = useState(
-    [] as {
-      role: string;
-      content: string;
-    }[]
-  );
-
-  const [inputValue, setInputValue] = useState("");
-  const [newQuestionAdded, setNewQuestionAdded] = useState(false);
+  const [messages, setMessages] =
+    useState<{ role: string; content: string }[]>();
+  const [inputValue, setInputValue] = useState<string>("");
+  const [newQuestionAdded, setNewQuestionAdded] = useState<boolean>(false);
 
   useEffect(() => {
     if (uploadResponse.sourceId && newQuestionAdded) {
@@ -55,6 +50,12 @@ export default function Home() {
       setNewQuestionAdded(false);
     }
   }, [uploadResponse.sourceId, newQuestionAdded]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(scrollToBottom, [messages]);
 
   const addQuestion = (question: string) => {
     const newMessages = [...messages, { role: "user", content: question }];
@@ -67,7 +68,7 @@ export default function Home() {
     const len = messages.length;
     sendingMessages[len - 1].content =
       messages[len - 1].content +
-      " Please give me the relevant html web page link instead of page numbers if it exists. Don't write the page numbers.";
+      " Please write the relevant html web page link instead of page numbers if it exists. Don't write the page numbers!";
     console.log(sendingMessages);
     try {
       const response = await fetch("https://api.chatpdf.com/v1/chats/message", {
@@ -95,7 +96,7 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-between md:p-24 p-10">
       <h1 className="text-3xl font-bold">ChatPDF</h1>
       <div className="flex flex-col items-center w-full">
         {!uploadResponse.sourceId && (
@@ -119,20 +120,24 @@ export default function Home() {
         )}
         {uploadResponse.sourceId && (
           <div className="w-full space-y-2">
-            {messages.map((message) => (
-              <div className="flex flex-col" key={message.content}>
-                <div
-                  className={`${
-                    message.role === "user"
-                      ? "bg-gray-300 text-black"
-                      : "bg-blue-600 text-white"
-                  } py-2 px-4 rounded-2xl`}
-                >
-                  {message.content}
-                </div>
-              </div>
-            ))}
-
+            <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
+              {messages.map((message, key) => {
+                return message.role === "user" ? (
+                  <div className="flex justify-end my-2" key={key}>
+                    <div className="bg-blue-600 text-white py-2 px-4 rounded-2xl max-w-xl">
+                      {message.content}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex justify-start" key={key}>
+                    <div className="bg-gray-300 text-black py-2 px-4 rounded-2xl max-w-2xl">
+                      {message.content}
+                    </div>
+                  </div>
+                );
+              })}
+              <div ref={messagesEndRef} />
+            </div>
             <div className="space-x-2 flex">
               <input
                 type="text"
