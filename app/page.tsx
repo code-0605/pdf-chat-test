@@ -3,6 +3,11 @@ import { Dispatch, SetStateAction, useEffect, useState, useRef } from "react";
 
 const apiKey = "sec_jPCBzEye7iQA38mza2upVdBGnz2xOBVH";
 
+interface IMessage {
+  role: string;
+  content: string;
+}
+
 async function uploadFile(
   file: File,
   setUploadResponse: Dispatch<SetStateAction<null>>
@@ -39,8 +44,7 @@ export default function Home() {
       sourceId: string;
     }
   );
-  const [messages, setMessages] =
-    useState<{ role: string; content: string }[]>();
+  const [messages, setMessages] = useState<IMessage[]>();
   const [inputValue, setInputValue] = useState<string>("");
   const [newQuestionAdded, setNewQuestionAdded] = useState<boolean>(false);
 
@@ -63,13 +67,12 @@ export default function Home() {
     setNewQuestionAdded(true);
   };
 
-  async function fetchAnswers(sourceId: string, messages = []) {
+  async function fetchAnswers(sourceId: string, messages: IMessage[]) {
     let sendingMessages = messages.map((msg) => ({ ...msg }));
     const len = messages.length;
     sendingMessages[len - 1].content =
       messages[len - 1].content +
       " Please write the relevant html web page link instead of page numbers if it exists. Don't write the page numbers!";
-    console.log(sendingMessages);
     try {
       const response = await fetch("https://api.chatpdf.com/v1/chats/message", {
         method: "POST",
