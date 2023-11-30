@@ -8,9 +8,13 @@ interface IMessage {
   content: string;
 }
 
+interface IUploadResponse {
+  sourceId: string;
+}
+
 async function uploadFile(
   file: File,
-  setUploadResponse: Dispatch<SetStateAction<null>>
+  setUploadResponse: Dispatch<SetStateAction<IUploadResponse>>
 ) {
   const formData = new FormData();
   formData.append("file", file);
@@ -39,7 +43,7 @@ async function uploadFile(
 export default function Home() {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   // State to store the response from the upload
-  const [uploadResponse, setUploadResponse] = useState<{ sourceId: string }>({
+  const [uploadResponse, setUploadResponse] = useState<IUploadResponse>({
     sourceId: "",
   });
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -70,7 +74,8 @@ export default function Home() {
     const len = messages.length;
     sendingMessages[len - 1].content =
       messages[len - 1].content +
-      " Please write the relevant html web page link instead of page numbers if it exists. Don't write the page numbers!";
+      " Please write the relevant html web page link instead of page numbers if it exists. Don't write the page numbers!"; // prompt engineering
+
     try {
       const response = await fetch("https://api.chatpdf.com/v1/chats/message", {
         method: "POST",
